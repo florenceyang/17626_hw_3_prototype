@@ -30,10 +30,14 @@ function run(cmd, args) {
   return execFileSync(cmd, args, { cwd: frontend, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 32e6 });
 }
 const titles = [];
-const vitest = JSON.parse(run("npx", ["vitest", "list", "--json"]));
+const vitest = JSON.parse(
+  run(process.execPath, [resolve(frontend, "node_modules/vitest/vitest.mjs"), "list", "--json"]),
+);
 for (const t of vitest) titles.push(t.name);
 
-const pw = JSON.parse(run("npx", ["playwright", "test", "--list", "--reporter=json"]));
+const pw = JSON.parse(
+  run(process.execPath, [resolve(frontend, "node_modules/@playwright/test/cli.js"), "test", "--list", "--reporter=json"]),
+);
 (function walk(suites) {
   for (const s of suites ?? []) {
     for (const spec of s.specs ?? []) titles.push(spec.title);

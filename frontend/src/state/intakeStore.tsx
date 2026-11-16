@@ -225,9 +225,13 @@ export function IntakeProvider({ children }: { children: ReactNode }) {
         saveDraft(nickname, state.draft);
         dispatch({ type: "pendingSave", value: false });
       }
+      if (!state.draft && state.lastSubmitted?.confirmationNumber) {
+        saveRequest({ ...state.lastSubmitted, ownerNickname: nickname });
+        addSubmitted(nickname, state.lastSubmitted.confirmationNumber);
+      }
       dispatch({ type: "login", nickname, savedDraft: state.draft ? null : loadDraft(nickname) });
     },
-    [state.draft, state.pendingSave],
+    [state.draft, state.pendingSave, state.lastSubmitted],
   );
 
   const api = useMemo<IntakeApi>(

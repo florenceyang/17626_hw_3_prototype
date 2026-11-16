@@ -75,6 +75,42 @@ test("US3-AS2 an unreadable upload is flagged immediately on the upload step", a
   await expect(page.getByTestId("doc-problem-lease")).toBeVisible();
 });
 
+test("FR-015 one document slot accepts multiple photos and reports the document type once", async ({ page }) => {
+  await fillUntilUpload(page, evictionPlan(FAR));
+  await page.getByTestId("file-lease").setInputFiles([
+    { name: "lease-page-1.jpg", mimeType: "image/jpeg", buffer: Buffer.from("page one") },
+    { name: "lease-page-2.jpg", mimeType: "image/jpeg", buffer: Buffer.from("page two") },
+  ]);
+  await expect(page.getByText("Received: lease-page-1.jpg")).toBeVisible();
+  await expect(page.getByText("Received: lease-page-2.jpg")).toBeVisible();
+  await page.getByRole("button", { name: "Continue to review" }).click();
+  await page.getByRole("button", { name: "Send my request" }).click();
+
+  const received = page.getByTestId("docs-received");
+  await expect(received).toContainText("Lease");
+  await expect(received.getByRole("listitem")).toHaveCount(1);
+  const raw = await page.evaluate(() => localStorage.getItem("lai.v1.requests") ?? "");
+  expect(raw).toContain("lease-page-1.jpg");
+  expect(raw).toContain("lease-page-2.jpg");
+});
+
+test("FR-016 Retake or replace opens the file picker and replaces only the unreadable file", async ({ page }) => {
+  await fillUntilUpload(page, evictionPlan(FAR));
+  await upload(page, "lease", "unreadable");
+  const [fileChooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.getByRole("button", { name: "Retake or replace" }).click(),
+  ]);
+  expect(fileChooser.isMultiple()).toBe(true);
+  await fileChooser.setFiles({
+    name: "lease-replacement.jpg",
+    mimeType: "image/jpeg",
+    buffer: Buffer.from("replacement"),
+  });
+  await expect(page.getByTestId("doc-problem-lease")).toContainText("lease-replacement.jpg");
+  await expect(page.getByTestId("doc-problem-lease")).not.toContainText("lease.jpg");
+});
+
 test("R4 stored request records contain only file metadata, never file contents", async ({ page }) => {
   await fillUntilUpload(page, evictionPlan(FAR));
   await upload(page, "lease");

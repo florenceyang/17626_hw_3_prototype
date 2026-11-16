@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { ApplicableDocument } from "../rules/documents";
 import type { DocumentType, Readability, UploadedDocument } from "../types";
 
@@ -11,44 +11,60 @@ interface Props {
   onChange: (documents: UploadedDocument[]) => void;
   onBack: () => void;
   onContinue: () => void;
+  onSaveLater: () => void;
+  savedMessage: string | null;
 }
 
 const ACCEPTED = (mime: string) => mime.startsWith("image/") || mime === "application/pdf";
 
-export function UploadStep({ items, documents, onChange, onBack, onContinue }: Props) {
+export function UploadStep({
+  items,
+  documents,
+  onChange,
+  onBack,
+  onContinue,
+  onSaveLater,
+  savedMessage,
+}: Props) {
   const [simulate, setSimulate] = useState<Partial<Record<DocumentType, Readability>>>({});
   const [typeErrors, setTypeErrors] = useState<Partial<Record<DocumentType, string>>>({});
-  const [inputKeys, setInputKeys] = useState<Partial<Record<DocumentType, number>>>({});
+  const inputs = useRef<Partial<Record<DocumentType, HTMLInputElement | null>>>({});
+  const pendingRetakes = useRef<Partial<Record<DocumentType, UploadedDocument>>>({});
+  const retakeClicks = useRef<Partial<Record<DocumentType, boolean>>>({});
 
-  const docFor = (type: DocumentType) => documents.find((d) => d.type === type);
-  const replace = (type: DocumentType, doc: UploadedDocument | null) =>
-    onChange([...documents.filter((d) => d.type !== type), ...(doc ? [doc] : [])]);
+  const docsFor = (type: DocumentType) => documents.filter((d) => d.type === type);
 
-  const onFile = (type: DocumentType, file: File | undefined) => {
-    if (!file) return;
-    if (!ACCEPTED(file.type)) {
+  const onFiles = (type: DocumentType, files: File[]) => {
+    if (files.length === 0) return;
+    if (files.some((file) => !ACCEPTED(file.type))) {
       setTypeErrors((e) => ({ ...e, [type]: "We can't use this type of file. Please choose a photo or a PDF." }));
       return;
     }
     setTypeErrors((e) => ({ ...e, [type]: undefined }));
-    replace(type, {
-      type,
-      fileName: file.name,
-      mimeType: file.type,
-      sizeBytes: file.size,
-      readability: simulate[type] ?? "readable",
-    });
+    const retaking = pendingRetakes.current[type];
+    const retained = docsFor(type).filter((doc) => doc !== retaking);
+    const added = files.map(
+      (file): UploadedDocument => ({
+        type,
+        fileName: file.name,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        readability: simulate[type] ?? "readable",
+      }),
+    );
+    onChange([...documents.filter((d) => d.type !== type), ...retained, ...added]);
+    delete pendingRetakes.current[type];
   };
 
   const onSimulate = (type: DocumentType, value: Readability) => {
     setSimulate((s) => ({ ...s, [type]: value }));
-    const existing = docFor(type);
-    if (existing) replace(type, { ...existing, readability: value });
+    onChange(documents.map((doc) => (doc.type === type ? { ...doc, readability: value } : doc)));
   };
 
-  const retake = (type: DocumentType) => {
-    replace(type, null);
-    setInputKeys((k) => ({ ...k, [type]: (k[type] ?? 0) + 1 }));
+  const retake = (type: DocumentType, doc: UploadedDocument) => {
+    pendingRetakes.current[type] = doc;
+    retakeClicks.current[type] = true;
+    inputs.current[type]?.click();
   };
 
   return (
@@ -67,7 +83,8 @@ export function UploadStep({ items, documents, onChange, onBack, onContinue }: P
       </div>
 
       {items.map(({ rule, required }) => {
-        const doc = docFor(rule.type);
+        const typeDocuments = docsFor(rule.type);
+        const unreadable = typeDocuments.filter((doc) => doc.readability !== "readable");
         const inputId = `file-${rule.type}`;
         return (
           <div key={rule.type} className="doc-slot" data-testid={`doc-slot-${rule.type}`} data-required={String(required)}>
@@ -80,7 +97,7 @@ export function UploadStep({ items, documents, onChange, onBack, onContinue }: P
               Prototype: simulate result{" "}
               <select
                 data-testid={`simulate-${rule.type}`}
-                value={simulate[rule.type] ?? doc?.readability ?? "readable"}
+                value={simulate[rule.type] ?? typeDocuments[0]?.readability ?? "readable"}
                 onChange={(e) => onSimulate(rule.type, e.target.value as Readability)}
               >
                 <option value="readable">Readable</option>
@@ -90,15 +107,25 @@ export function UploadStep({ items, documents, onChange, onBack, onContinue }: P
             </label>
 
             <label htmlFor={inputId} className="file-label">
-              Choose a photo or file for: {rule.label}
+              Choose photos or files for: {rule.label}
             </label>
             <input
-              key={inputKeys[rule.type] ?? 0}
+              ref={(input) => {
+                inputs.current[rule.type] = input;
+              }}
               id={inputId}
               data-testid={`file-${rule.type}`}
               type="file"
               accept="image/*,application/pdf"
-              onChange={(e) => onFile(rule.type, e.target.files?.[0])}
+              multiple
+              onClick={() => {
+                if (!retakeClicks.current[rule.type]) delete pendingRetakes.current[rule.type];
+                retakeClicks.current[rule.type] = false;
+              }}
+              onChange={(e) => {
+                onFiles(rule.type, Array.from(e.target.files ?? []));
+                e.currentTarget.value = "";
+              }}
             />
 
             {typeErrors[rule.type] && (
@@ -107,21 +134,32 @@ export function UploadStep({ items, documents, onChange, onBack, onContinue }: P
               </p>
             )}
 
-            {doc && doc.readability === "readable" && (
-              <p className="notice ok" role="status">
-                Received: {doc.fileName}
-              </p>
+            {typeDocuments.some((doc) => doc.readability === "readable") && (
+              <ul className="uploaded-files" aria-label={`Received files for ${rule.label}`}>
+                {typeDocuments
+                  .filter((doc) => doc.readability === "readable")
+                  .map((doc, index) => (
+                    <li key={`${doc.fileName}-${index}`} className="notice ok" role="status">
+                      Received: {doc.fileName}
+                    </li>
+                  ))}
+              </ul>
             )}
-            {doc && doc.readability !== "readable" && (
+            {unreadable.length > 0 && (
               <div className="notice warn" role="alert" data-testid={`doc-problem-${rule.type}`}>
-                <p>
-                  {doc.readability === "unreadable"
-                    ? "We can't read this photo. It may be blurry or too dark."
-                    : `This looks like the wrong page. Please check that it is your ${rule.label.toLowerCase()}.`}
-                </p>
-                <button type="button" className="secondary" onClick={() => retake(rule.type)}>
-                  Retake or replace
-                </button>
+                {unreadable.map((doc, index) => (
+                  <div key={`${doc.fileName}-${index}`}>
+                    <p>
+                      {doc.fileName}:{" "}
+                      {doc.readability === "unreadable"
+                        ? "We can't read this photo. It may be blurry or too dark."
+                        : `This looks like the wrong page. Please check that it is your ${rule.label.toLowerCase()}.`}
+                    </p>
+                    <button type="button" className="secondary" onClick={() => retake(rule.type, doc)}>
+                      Retake or replace
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -138,6 +176,16 @@ export function UploadStep({ items, documents, onChange, onBack, onContinue }: P
         <button type="button" className="primary" onClick={onContinue}>
           Continue to review
         </button>
+      </div>
+      <div className="save-later">
+        <button type="button" className="link" data-testid="save-later" onClick={onSaveLater}>
+          Save and finish later
+        </button>
+        {savedMessage && (
+          <span role="status" className="saved">
+            {savedMessage}
+          </span>
+        )}
       </div>
     </section>
   );

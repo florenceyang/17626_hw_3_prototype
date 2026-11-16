@@ -38,18 +38,23 @@ no account features.
 2. **Given** the applicant selected "Eviction" as the problem type, **When** they move through
    the form, **Then** only questions tagged for eviction or for all problem types are shown.
 3. **Given** the applicant is on the problem-type step, **When** they continue, **Then** the
-   deadline and danger questions appear before any household or income question.
+   deadline and danger questions appear before any household or income question. A "Yes" or
+   "I'm not sure" danger answer shows a brief urgent-review notice, then lets the applicant
+   continue with the remaining questions.
 4. **Given** any question screen, **When** it is displayed, **Then** it shows exactly one
-   question and a line naming the next step (for example, "Next: your court date").
+   question and a line naming the next applicable step (for example, "Next: your court date"),
+   including when a conditional follow-up question appears.
 5. **Given** a question that uses a legal term (for example, "eviction notice"), **When** the
    screen is displayed, **Then** a plain-language explanation of the term appears above the
    question's answer controls.
 6. **Given** any question screen, **When** the applicant chooses "I'm not sure", **Then** the
    answer is saved with an unsure tag and the applicant can continue.
 7. **Given** the eviction path, **When** the applicant reaches the court-date questions,
-   **Then** the notice date and the court appearance date are asked on two separate screens.
-8. **Given** the applicant entered a court date, **When** it is shown back (review screen or
-   staff list), **Then** it is labeled "Reported by applicant, not verified".
+   **Then** the notice date and the court appearance date are asked on two separate screens. If
+   the court date is before the notice date, the applicant is asked to check both dates or mark
+   the court date "I'm not sure".
+8. **Given** the applicant entered a court date, **When** staff view it, **Then** it is labeled
+   "Reported by applicant, not verified"; applicant screens do not show this label.
 9. **Given** a non-urgent request, **When** the applicant submits, **Then** the confirmation
    screen shows a confirmation number, a list of documents received (or "None"), and "Expect a
    call within 2 business days".
@@ -83,7 +88,8 @@ contact. Then run the helper path and confirm the danger answers never reappear.
    visible without scrolling.
 2. **Given** any screen, **When** the applicant presses quick exit, **Then** the form is
    replaced by a neutral, unrelated page in one action, and the in-progress answers are not shown
-   when the browser's Back button is pressed.
+   when the browser's Back button is pressed. This also applies while logged in; previously saved
+   account drafts remain available after logging in again.
 3. **Given** any screen of the form, **When** it is displayed, **Then** a phone number or other
    way to reach a person for help is visible.
 4. **Given** the start of the form, **When** the applicant is asked whether someone is helping
@@ -115,13 +121,13 @@ skip a required document. Confirm each message, then submit successfully.
    that apply to the applicant's answers (per the Document Requirements table), marks which are
    required, and shows photo instructions before the upload control.
 2. **Given** the applicant uploads a document, **When** the upload is recognized as unreadable
-   or as the wrong page, **Then** a message saying so appears immediately, with an option to
-   retake or replace it.
+   or as the wrong page, **Then** a message saying so appears immediately, and "Retake or
+   replace" opens the file picker while keeping the current file until a replacement is selected.
 3. **Given** a required document for the applicant's problem type has not been uploaded,
    **When** the applicant leaves the upload step, **Then** a message names the missing document
    and the "Submit" button remains available.
 4. **Given** documents were uploaded, **When** the confirmation screen is shown, **Then** it
-   lists each document received by type.
+   lists each received document type once, even if it has multiple photos.
 5. **Given** an eviction case where the applicant reports Section 8 and recertification issues,
    **When** they reach the upload step, **Then** the required list includes the eviction notice,
    lease, rent payment history, inspection notices, and recertification paperwork, and court
@@ -175,12 +181,14 @@ leave, return, log in, resume, submit, and view the status.
 **Acceptance Scenarios**:
 
 1. **Given** an applicant who is not logged in, **When** they choose "Save and finish later" or
-   "Check my status", **Then** they are asked to log in or create an account, and they can
-   decline and keep going without saving.
+   "Check my status" from the welcome, upload, or review screen, **Then** they are asked to log in
+   or create an account, and they can decline and keep going without saving.
 2. **Given** a logged-in applicant who saved partway, **When** they return and log in, **Then**
    the form opens at the first unanswered question with earlier answers kept.
 3. **Given** a logged-in applicant who submitted a request, **When** they view their status,
    **Then** it reads "Waiting for staff review".
+   An applicant who submits anonymously can also create or log in to an account from the
+   confirmation screen to associate that request with their status list.
 4. **Given** any account screen, **When** it is displayed, **Then** it is labeled as a
    simulated account for the prototype.
 
@@ -224,7 +232,8 @@ leave, return, log in, resume, submit, and view the status.
 - **FR-004**: The system MUST ask for the problem type first and then show only the questions
   that apply to that type. *(G-6)*
 - **FR-005**: Deadline and danger questions MUST come before any household or income question.
-  *(G-15)*
+  A "Yes" or "I'm not sure" danger answer MUST show an urgent-review notice and allow the
+  applicant to continue. *(G-15)*
 - **FR-006**: Each screen MUST show one question and name the next step. *(G-207)*
 - **FR-007**: Legal terms and required documents MUST be explained in plain language on the same
   screen, before the question or upload control. *(G-7; K4 resolved in favor of G-7)*
@@ -237,16 +246,18 @@ leave, return, log in, resume, submit, and view the status.
   questions privately and MUST NOT display those answers on any later screen. *(G-134, G-68;
   K5 resolved in favor of G-68)*
 - **FR-012**: The eviction-notice date and the court appearance date MUST be asked as two
-  separate questions. *(G-81)*
+  separate questions. A court date before the notice date MUST be flagged for correction or
+  marked "I'm not sure". *(G-81)*
 - **FR-013**: Court dates entered on the form MUST be labeled "Reported by applicant, not
-  verified" wherever they are shown. *(G-30)*
+  verified" in the staff view only. *(G-30)*
 - **FR-014**: A request MUST be marked urgent if the reported court appearance date is on or
   before 7 calendar days after the submission date (past dates included), or if danger is
   reported. *(G-406)*
 - **FR-015**: Applicants MUST be able to upload photos of their notice, lease, court papers, and
-  pay stubs, with photo-taking instructions shown before the upload control. *(G-8, G-329)*
+  pay stubs, including multiple photos for one document type, with photo-taking instructions
+  shown before the upload control. *(G-8, G-329)*
 - **FR-016**: The system MUST tell the applicant immediately when an upload is unreadable or is
-  the wrong page. *(G-96)*
+  the wrong page and let them reopen the file picker to replace it. *(G-96)*
 - **FR-017**: The system MUST tell the applicant which required documents are missing, MUST
   still allow submission, and MUST record the missing documents on the request. *(G-95)*
   Required documents are those in the Document Requirements table below whose condition is met.

@@ -45,6 +45,7 @@ test("US4-AS1 / US4-AS2 / US4-AS3 / FR-023 / SC-004 / SC-009 staff list flags ur
 
   // US4-AS4 / SC-009: unsure count, missing documents, unverified court date
   await expect(row(dangerUnsure).getByTestId("staff-unsure")).toHaveAttribute("data-count", "1");
+  await expect(row(dangerUnsure).getByTestId("staff-unsure")).toContainText("Safety concern: someone finding out");
   await expect(row(in8).getByTestId("staff-unsure")).toHaveAttribute("data-count", "0");
   for (const n of [in7, in8, dangerUnsure]) {
     await expect(row(n).getByTestId("staff-missing")).toContainText("Eviction notice");

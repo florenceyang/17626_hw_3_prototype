@@ -44,7 +44,7 @@ describe("StaffList (mock)", () => {
     expect(a.getByTestId("staff-urgent")).toHaveTextContent("Yes (court date, danger reported)");
     expect(a.getByTestId("staff-unsure")).toHaveAttribute("data-count", "2");
     expect(a.getByTestId("staff-unsure")).toHaveTextContent("How many people live in your home");
-    expect(a.getByTestId("staff-unsure")).toHaveTextContent("A safety question");
+    expect(a.getByTestId("staff-unsure")).toHaveTextContent("Safety concern: feeling unsafe at home");
     expect(a.getByTestId("staff-missing")).toHaveTextContent("Lease");
     expect(a.getByTestId("staff-court")).toHaveTextContent("November 20, 2026 (Reported by applicant, not verified)");
 

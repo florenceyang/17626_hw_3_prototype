@@ -102,6 +102,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .doc-slot { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin: 12px 0; }
 .doc-slot .explanation { border-left-width: 3px; background: var(--bg); }
+.uploaded-files { list-style: none; margin: 8px 0; padding: 0; }
+.uploaded-files .notice { margin: 6px 0; }
 .tag { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); font-weight: 400; }
 .tag.required { background: #e8f0fb; border-color: var(--primary); }
 .simulate { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }

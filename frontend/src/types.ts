@@ -78,6 +78,8 @@ export interface Question {
   private?: boolean;
   /** Answer is applicant-reported and must be labeled unverified (FR-013). */
   reported?: boolean;
+  /** Staff-only detail for an unsure private answer; never shown to the applicant. */
+  staffLabel?: string;
   traces: Traces;
 }
 

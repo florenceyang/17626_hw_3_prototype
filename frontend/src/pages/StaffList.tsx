@@ -16,7 +16,7 @@ function unsureLabels(r: HelpRequest): string[] {
     .map((a) => {
       const q = QUESTIONS_BY_ID[a.questionId];
       if (!q) return a.questionId;
-      return q.private ? "A safety question" : q.prompt;
+      return q.private ? q.staffLabel ?? "A safety question" : q.prompt;
     });
 }
 

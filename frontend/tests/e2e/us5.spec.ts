@@ -58,6 +58,23 @@ test("US5-AS2 a saved form resumes at the first unanswered question after reload
   await expect(page.getByTestId("question").locator("input")).toHaveValue("2026-11-02");
 });
 
+test("FR-018 save and finish later is available on upload and review", async ({ page }) => {
+  await startForm(page);
+  await fillUntilUpload(page, evictionPlan(plusDays(TUESDAY_10AM, 30)));
+  await page.getByTestId("save-later").click();
+  await expect(page.getByRole("heading", { name: "Save your answers" })).toBeVisible();
+  await page.getByTestId("nickname").fill("late-saver");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("button", { name: "Continue my form" }).click();
+
+  await expect(page.getByTestId("upload-step")).toBeVisible();
+  await page.getByTestId("save-later").click();
+  await expect(page.locator(".saved")).toContainText("Saved.");
+  await page.getByRole("button", { name: "Continue to review" }).click();
+  await page.getByTestId("save-later").click();
+  await expect(page.locator(".saved")).toContainText("Saved.");
+});
+
 test("US5-AS3 after submitting while logged in, the status reads 'Waiting for staff review'", async ({ page }) => {
   await page.goto("/#/account");
   await page.getByTestId("nickname").fill("tester2");
@@ -68,6 +85,18 @@ test("US5-AS3 after submitting while logged in, the status reads 'Waiting for st
   await reviewAndSubmit(page);
   const number = await page.getByTestId("confirmation-number").textContent();
   await page.getByRole("button", { name: "See my status" }).click();
+  await expect(page.getByTestId("account-status")).toContainText(`${number}: Waiting for staff review`);
+});
+
+test("US5-AS3 an anonymous confirmation can be linked to an account for status checks", async ({ page }) => {
+  await startForm(page);
+  await fillUntilUpload(page, evictionPlan(plusDays(TUESDAY_10AM, 30)));
+  await reviewAndSubmit(page);
+  const number = await page.getByTestId("confirmation-number").textContent();
+
+  await page.getByTestId("confirmation-account").click();
+  await page.getByTestId("nickname").fill("status-checker");
+  await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByTestId("account-status")).toContainText(`${number}: Waiting for staff review`);
 });
 

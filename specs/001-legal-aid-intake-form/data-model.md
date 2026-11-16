@@ -21,6 +21,7 @@ spec.
 | `explanation` | optional plain-language text | Shown above the answer controls (FR-007, K4). |
 | `nextStepLabel` | text, for example "Next: your court date" | Computed from the next visible question if not set (FR-006). |
 | `private` | boolean | `true` for danger questions (FR-011). |
+| `staffLabel` | optional string | Staff-only detail for an unsure private answer; never shown to the applicant (FR-023). |
 | `traces` | `{ fr: string[], goals: string[] }` | Must contain at least one FR ID (Principle II, R9). |
 
 ### DocumentRule
@@ -82,7 +83,7 @@ No transition leaves `waitingForStaffReview` in the prototype. Staff actions are
 | `questionId` | Question `id` | |
 | `value` | string \| number \| ISO date \| boolean \| null | `null` when the applicant chose "not sure" |
 | `unsure` | boolean | `true` makes the answer appear in the staff list (FR-023) |
-| `source` | `"reported"` | Set on court and notice dates and shown as "Reported by applicant, not verified" (FR-013, G-30) |
+| `source` | `"reported"` | Set on court and notice dates and shown only in the staff view as "Reported by applicant, not verified" (FR-013, G-30) |
 | `private` | boolean | Copied from the question when `helperPresent` is not `false`. Private answers are never shown on applicant screens (FR-011). |
 
 ### UploadedDocument (FR-015, FR-016)
@@ -90,7 +91,7 @@ No transition leaves `waitingForStaffReview` in the prototype. Staff actions are
 | Field | Type | Rules |
 |---|---|---|
 | `type` | DocumentRule `type` | |
-| `fileName`, `mimeType`, `sizeBytes` | metadata only | Accepted types: `image/*` and `application/pdf`. Other types are rejected with a message (spec edge case). |
+| `fileName`, `mimeType`, `sizeBytes` | metadata only | Multiple files of the same type are allowed. Accepted types: `image/*` and `application/pdf`. Other types are rejected with a message (spec edge case). |
 | `readability` | `readable` \| `unreadable` \| `wrongPage` | Comes from the simulation control (R6). Only `readable` documents count toward required documents and appear as received on the confirmation screen. |
 
 ### MockAccount (FR-018 to FR-020, FR-026)
@@ -107,7 +108,7 @@ No transition leaves `waitingForStaffReview` in the prototype. Staff actions are
 |---|---|
 | Confirmation number and submitted time | `confirmationNumber`, `submittedAt` |
 | Urgent | `urgent.isUrgent` plus the reasons (date or danger) |
-| Not sure | number of answers with `unsure`, plus the question prompts |
+| Not sure | number of answers with `unsure`, plus question prompts or staff-only labels for private answers |
 | Missing documents | labels of `missingDocuments` |
 | Court date | value plus "Reported by applicant, not verified" |
 | Status | always "Waiting for staff review" |

@@ -11,10 +11,14 @@ interface Props {
   missing: DocumentType[];
   onBack: () => void;
   onSubmit: () => void;
+  onSaveLater: () => void;
+  savedMessage: string | null;
 }
 
-export function ReviewStep({ draft, questions, missing, onBack, onSubmit }: Props) {
-  const readable = draft.documents.filter((d) => d.readability === "readable");
+export function ReviewStep({ draft, questions, missing, onBack, onSubmit, onSaveLater, savedMessage }: Props) {
+  const readableTypes = [
+    ...new Set(draft.documents.filter((d) => d.readability === "readable").map((d) => d.type)),
+  ];
   return (
     <section className="review" data-testid="review-step">
       <h1>Check your answers</h1>
@@ -40,7 +44,6 @@ export function ReviewStep({ draft, questions, missing, onBack, onSubmit }: Prop
               <dt>{q.prompt}</dt>
               <dd>
                 {formatAnswer(a)}
-                {q.reported && !a.unsure && <span className="reported"> ({COPY.reported})</span>}
               </dd>
             </div>
           );
@@ -48,7 +51,11 @@ export function ReviewStep({ draft, questions, missing, onBack, onSubmit }: Prop
       </dl>
 
       <h2>Documents</h2>
-      <p>{readable.length ? readable.map((d) => DOCUMENT_RULES_BY_TYPE[d.type].label).join(", ") : COPY.confirmation.none}</p>
+      <p>
+        {readableTypes.length
+          ? readableTypes.map((type) => DOCUMENT_RULES_BY_TYPE[type].label).join(", ")
+          : COPY.confirmation.none}
+      </p>
 
       <p className="next-step" data-testid="next-step">
         Next: send your request
@@ -60,6 +67,16 @@ export function ReviewStep({ draft, questions, missing, onBack, onSubmit }: Prop
         <button type="button" className="primary" onClick={onSubmit}>
           Send my request
         </button>
+      </div>
+      <div className="save-later">
+        <button type="button" className="link" data-testid="save-later" onClick={onSaveLater}>
+          Save and finish later
+        </button>
+        {savedMessage && (
+          <span role="status" className="saved">
+            {savedMessage}
+          </span>
+        )}
       </div>
     </section>
   );

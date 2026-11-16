@@ -88,6 +88,27 @@ test("US2-AS2 quick exit works from the welcome, upload, review and confirmation
   }
 });
 
+test("FR-003 quick exit clears the logged-in session but keeps an explicitly saved account draft", async ({ page }) => {
+  await page.goto("/#/account");
+  await page.getByTestId("nickname").fill("quick-exit-user");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("button", { name: "Go to the start" }).click();
+  await startForm(page);
+  await answerCurrent(page, "eviction");
+  await answerCurrent(page, "alone");
+  await page.getByTestId("save-later").click();
+  await expect(page.getByRole("status")).toContainText("Saved.");
+
+  await page.getByTestId("quick-exit").click();
+  await page.waitForURL(/\/neutral\.html$/);
+  await page.goto("/#/account");
+  await expect(page.getByTestId("nickname")).toBeVisible();
+  await page.getByTestId("nickname").fill("quick-exit-user");
+  await page.getByRole("button", { name: "Log in" }).click();
+  await page.getByRole("button", { name: "Continue my form" }).click();
+  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-NOTICE-DATE");
+});
+
 test("US2-AS4 / FR-010 the applicant can say they are alone or have a helper", async ({ page }) => {
   await startForm(page);
   await answerCurrent(page, "eviction");
