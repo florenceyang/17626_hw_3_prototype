@@ -35,16 +35,16 @@ own.
 
 **Purpose**: Create the static frontend project. There is no backend (Principle IV).
 
-- [ ] T001 Scaffold a Vite + React 19 + TypeScript (strict) single-page app in `frontend/` (`frontend/package.json`, `frontend/index.html`, `frontend/tsconfig.json`, `frontend/src/main.tsx`). Add npm scripts `dev`, `build`, `test` (vitest run), and `test:e2e` (playwright test). Add no router, no date library, no HTTP client, and no server dependencies. (R1, Principles III and IV)
-- [ ] T002 [P] Configure Vitest with the jsdom environment and React Testing Library in `frontend/vite.config.ts` and `frontend/tests/setup.ts`. The test include patterns are `tests/unit/**` and `tests/component/**`. (R2)
-- [ ] T003 [P] Configure Playwright in `frontend/playwright.config.ts`:
+- [X] T001 Scaffold a Vite + React 19 + TypeScript (strict) single-page app in `frontend/` (`frontend/package.json`, `frontend/index.html`, `frontend/tsconfig.json`, `frontend/src/main.tsx`). Add npm scripts `dev`, `build`, `test` (vitest run), and `test:e2e` (playwright test). Add no router, no date library, no HTTP client, and no server dependencies. (R1, Principles III and IV)
+- [X] T002 [P] Configure Vitest with the jsdom environment and React Testing Library in `frontend/vite.config.ts` and `frontend/tests/setup.ts`. The test include patterns are `tests/unit/**` and `tests/component/**`. (R2)
+- [X] T003 [P] Configure Playwright in `frontend/playwright.config.ts`:
   - Use a `webServer` that runs `npm run dev` on port 5173.
   - Create one Chromium project with a 360×640 viewport and `hasTouch: true`.
   - Set `testDir: tests/e2e`.
   - Add `@axe-core/playwright` as a dev dependency.
   (R2, R10)
-- [ ] T004 [P] Create `frontend/.gitignore` listing `node_modules/`, `dist/`, `test-results/`, and `playwright-report/`. (Principle III)
-- [ ] T005 [P] Create the quick-exit destination `frontend/public/neutral.html`. It is a self-contained, generic "Local weather" page with no scripts, no links back to the app, and nothing about legal aid. (R3, FR-003)
+- [X] T004 [P] Create `frontend/.gitignore` listing `node_modules/`, `dist/`, `test-results/`, and `playwright-report/`. (Principle III)
+- [X] T005 [P] Create the quick-exit destination `frontend/public/neutral.html`. It is a self-contained, generic "Local weather" page with no scripts, no links back to the app, and nothing about legal aid. (R3, FR-003)
 
 ---
 
@@ -54,7 +54,7 @@ own.
 
 **⚠️ CRITICAL**: No user-story work can begin until this phase is complete.
 
-- [ ] T006 Define the entity types from data-model.md in `frontend/src/types.ts`. Use these values verbatim:
+- [X] T006 Define the entity types from data-model.md in `frontend/src/types.ts`. Use these values verbatim:
   - `ProblemType = "eviction" | "other" | "unsure"`
   - `Section = "problem" | "helper" | "deadline" | "danger" | "housing" | "household" | "income"`
   - `QuestionKind = "choice" | "date" | "number" | "yesNo"`
@@ -74,37 +74,37 @@ own.
   - `OfficeConfig`
 
   (data-model.md; enables FR-001–FR-026)
-- [ ] T007 [P] Create `frontend/src/config/office.ts` exporting `OFFICE: OfficeConfig` with:
+- [X] T007 [P] Create `frontend/src/config/office.ts` exporting `OFFICE: OfficeConfig` with:
   - `timeZone: "America/New_York"`
   - `openHour: 9` and `closeHour: 17` ("open hour included, close hour excluded")
   - `businessDays: [1,2,3,4,5]` (Monday to Friday)
   - `helpContact` with a fictional phone number "(555) 010-0199" and hours "Mon–Fri 9am–5pm"
   - `quickExitUrl: "/neutral.html"`
   (R3, R7, FR-008, FR-025)
-- [ ] T008 [P] Create the injectable clock in `frontend/src/state/clock.ts`:
+- [X] T008 [P] Create the injectable clock in `frontend/src/state/clock.ts`:
   - `now(): Date` returns `new Date()` by default.
   - `setClockForTests(fn)` overrides it in unit tests. End-to-end tests use Playwright `page.clock`.
   - Add `officeDateParts(date, tz)`, which uses `Intl.DateTimeFormat` to return `{year, month, day, weekday, hour, minute}` in the office time zone.
   (R7, R8)
-- [ ] T009 [P] Implement the localStorage adapter in `frontend/src/state/storage.ts` following contracts/storage.md:
+- [X] T009 [P] Implement the localStorage adapter in `frontend/src/state/storage.ts` following contracts/storage.md:
   - Keys `lai.v1.requests` and `lai.v1.accounts`.
   - `loadRequests()`, `saveRequest(req)`, `loadAccounts()`, `saveAccounts(map)`, and `clearPrototypeData()`.
   - Unparseable JSON is treated as empty, never thrown.
   - Write unit tests in `frontend/tests/unit/storage.test.ts`. Test names start with `storage:`; include a test for corrupt JSON.
   (R4, contracts/storage.md)
-- [ ] T010 [P] Create `frontend/src/config/copy.ts` with plain-language text for the welcome screen (free service, and who sees the information and why), the confirmation sentence explaining the confirmation number, the mock-banner text "Simulated for this prototype. Do not enter real information.", and the leave warning "If you leave now, your answers will not be saved." (FR-002, FR-021, FR-026)
-- [ ] T011 Implement the hash router and app shell:
+- [X] T010 [P] Create `frontend/src/config/copy.ts` with plain-language text for the welcome screen (free service, and who sees the information and why), the confirmation sentence explaining the confirmation number, the mock-banner text "Simulated for this prototype. Do not enter real information.", and the leave warning "If you leave now, your answers will not be saved." (FR-002, FR-021, FR-026)
+- [X] T011 Implement the hash router and app shell:
   - `frontend/src/App.tsx` handles routes `#/`, `#/form`, `#/confirmation`, `#/account`, and `#/staff`. Routes use `location.hash`, and form steps never change the hash or push history.
   - `frontend/src/components/Layout.tsx` renders a fixed top bar slot, the page content, and a phone-first container at most 480 px wide, with touch targets of at least 44 px.
   (contracts/ui-screens.md, R3, R10)
-- [ ] T012 [P] Create `frontend/src/components/MockBanner.tsx`, rendering the mock-banner text from copy.ts with `data-testid="mock-banner"`. (FR-026)
-- [ ] T013 Implement the in-memory intake store in `frontend/src/state/intakeStore.ts`, as a React context and reducer:
+- [X] T012 [P] Create `frontend/src/components/MockBanner.tsx`, rendering the mock-banner text from copy.ts with `data-testid="mock-banner"`. (FR-026)
+- [X] T013 Implement the in-memory intake store in `frontend/src/state/intakeStore.tsx`, as a React context and reducer:
   - Draft fields: `HelpRequest` with `status: "draft"`, the current step index, and `loggedInNickname: string | null`.
   - Actions: `start`, `answer(questionId, value)`, `markUnsure(questionId)`, `next`, `back` (in-app only), `reset`, and a `submit` placeholder.
   - The anonymous draft is never written to storage.
   (R4, FR-001, FR-009)
-- [ ] T014 [P] Implement `allConfigTraced(questions, documentRules)` in `frontend/src/rules/traceability.ts`. It returns the IDs of entries whose `traces.fr` is empty. (R9, Principle II)
-- [ ] T015 [P] Create the end-to-end helpers in `frontend/tests/e2e/helpers.ts`:
+- [X] T014 [P] Implement `allConfigTraced(questions, documentRules)` in `frontend/src/rules/traceability.ts`. It returns the IDs of entries whose `traces.fr` is empty. (R9, Principle II)
+- [X] T015 [P] Create the end-to-end helpers in `frontend/tests/e2e/helpers.ts`:
   - `resetApp(page)` clears localStorage and goes to `#/`.
   - `fixTime(page, isoInNewYork)` wraps `page.clock.setFixedTime`.
   - `answerCurrent(page, value)` answers the current question.
@@ -128,15 +128,15 @@ and check the confirmation screen (quickstart.md scenario 1).
 
 ### Tests for User Story 1 (write first, confirm they fail) ⚠️
 
-- [ ] T016 [P] [US1] Write unit tests for `visibleQuestions` in `frontend/tests/unit/visibleQuestions.test.ts`, covering every row of the contracts/rules.md table. Name them `FR-004 …`, `FR-005 / US1-AS3 …`, `FR-012 / US1-AS7 …`, and `edge: unsure problem type …`.
-- [ ] T017 [P] [US1] Write unit tests for `computeUrgency` in `frontend/tests/unit/urgency.test.ts`, covering all 7 rows of the contracts/rules.md table: +7 urgent, +8 not urgent, −3 urgent, unsure date not urgent, danger yes, danger unsure (FR-024), and both reasons. Name them `FR-014 …` and `FR-024 …`.
-- [ ] T018 [P] [US1] Write unit tests for `callbackMessage` in `frontend/tests/unit/callback.test.ts`, covering all 6 rows of the contracts/rules.md table in America/New_York: Tuesday 10:00, 9:00, 17:00, and 21:00; Saturday 10:00; and non-urgent. Name them `US1-AS9 …`, `US1-AS10 …`, `US1-AS12 …`, and `FR-025 …`.
-- [ ] T019 [P] [US1] Write component tests for QuestionScreen in `frontend/tests/component/QuestionScreen.test.tsx`:
+- [X] T016 [P] [US1] Write unit tests for `visibleQuestions` in `frontend/tests/unit/visibleQuestions.test.ts`, covering every row of the contracts/rules.md table. Name them `FR-004 …`, `FR-005 / US1-AS3 …`, `FR-012 / US1-AS7 …`, and `edge: unsure problem type …`.
+- [X] T017 [P] [US1] Write unit tests for `computeUrgency` in `frontend/tests/unit/urgency.test.ts`, covering all 7 rows of the contracts/rules.md table: +7 urgent, +8 not urgent, −3 urgent, unsure date not urgent, danger yes, danger unsure (FR-024), and both reasons. Name them `FR-014 …` and `FR-024 …`.
+- [X] T018 [P] [US1] Write unit tests for `callbackMessage` in `frontend/tests/unit/callback.test.ts`, covering all 6 rows of the contracts/rules.md table in America/New_York: Tuesday 10:00, 9:00, 17:00, and 21:00; Saturday 10:00; and non-urgent. Name them `US1-AS9 …`, `US1-AS10 …`, `US1-AS12 …`, and `FR-025 …`.
+- [X] T019 [P] [US1] Write component tests for QuestionScreen in `frontend/tests/component/QuestionScreen.test.tsx`:
   - `US1-AS4`: exactly one `question` test ID, and a `next-step` element whose text starts with "Next:".
   - `US1-AS5`: the `explanation` element comes before the answer controls in the page.
   - `US1-AS6`: choosing `unsure` stores `unsure: true` and `value: null` and enables Continue.
-- [ ] T020 [P] [US1] Write unit test `FR-009 / Principle II` in `frontend/tests/unit/traceability.test.ts`. It asserts that `allConfigTraced(QUESTIONS, DOCUMENT_RULES)` returns `[]` and that every question has `kind` and "I'm not sure" support.
-- [ ] T021 [P] [US1] Write end-to-end tests in `frontend/tests/e2e/us1.spec.ts`, one test per scenario US1-AS1 to US1-AS12, using `fixTime`:
+- [X] T020 [P] [US1] Write unit test `FR-009 / Principle II` in `frontend/tests/unit/traceability.test.ts`. It asserts that `allConfigTraced(QUESTIONS, DOCUMENT_RULES)` returns `[]` and that every question has `kind` and "I'm not sure" support.
+- [X] T021 [P] [US1] Write end-to-end tests in `frontend/tests/e2e/us1.spec.ts`, one test per scenario US1-AS1 to US1-AS12, using `fixTime`:
   - AS10 uses Tuesday 10:00 New York time.
   - AS12 uses Saturday 10:00 and Tuesday 21:00.
 
@@ -147,7 +147,7 @@ and check the confirmation screen (quickstart.md scenario 1).
 
 ### Implementation for User Story 1
 
-- [ ] T022 [P] [US1] Create the question set in `frontend/src/config/questions.ts`. Each question has a stable `id`, `section`, `appliesTo`, `kind`, plain-language `prompt`, `explanation` where a legal term is used, and `traces`. In this order:
+- [X] T022 [P] [US1] Create the question set in `frontend/src/config/questions.ts`. Each question has a stable `id`, `section`, `appliesTo`, `kind`, plain-language `prompt`, `explanation` where a legal term is used, and `traces`. In this order:
   1. `Q-PROBLEM-TYPE`: choice; Eviction or housing / Something else; all; FR-004, G-6
   2. `Q-HELPER`: choice; "I'm filling this in myself" / "Someone is helping me"; all; FR-010, G-133, G-134
   3. `Q-NOTICE-DATE`: date; eviction; explains "eviction notice"; FR-012, G-81
@@ -161,44 +161,44 @@ and check the confirmation screen (quickstart.md scenario 1).
   11. `Q-INCOME-AMOUNT`: number; all; showIf `Q-HAS-INCOME` = yes; FR-005
 
   "I'm not sure" is provided by the screen for every question, so Q-PROBLEM-TYPE needs no separate unsure option. Mark the placeholder danger wording with a `// TODO: staff review` comment (spec Assumptions).
-- [ ] T023 [P] [US1] Implement `visibleQuestions(problemType, answers)` in `frontend/src/rules/visibleQuestions.ts`:
+- [X] T023 [P] [US1] Implement `visibleQuestions(problemType, answers)` in `frontend/src/rules/visibleQuestions.ts`:
   - Filter by `appliesTo`. The `unsure` problem type gets only `all` questions.
   - Apply `showIf`.
   - Sort stably by the section order problem → helper → deadline → danger → housing → household → income.
   - Add `nextStepLabel(questions, index)`, which returns "Next: <short label>", or "Next: upload documents" after the last question.
   (FR-004, FR-005, FR-006)
-- [ ] T024 [P] [US1] Implement `computeUrgency(answers, submittedAt, office)` in `frontend/src/rules/urgency.ts`:
+- [X] T024 [P] [US1] Implement `computeUrgency(answers, submittedAt, office)` in `frontend/src/rules/urgency.ts`:
   - Compare calendar dates in `office.timeZone`.
   - The date reason applies when the court date ≤ the submission date + 7 days, past dates included. A null or unsure court date never sets the date reason.
   - The danger reason applies when any `danger`-section answer is `true` or unsure.
   - Return `{ isUrgent, reasons }`.
   (FR-014, FR-024, R8)
-- [ ] T025 [P] [US1] Implement `callbackMessage(urgent, submittedAt, office)` in `frontend/src/rules/callback.ts`, returning exactly one of:
+- [X] T025 [P] [US1] Implement `callbackMessage(urgent, submittedAt, office)` in `frontend/src/rules/callback.ts`, returning exactly one of:
   - "Expect a call today": urgent, a business day, and `openHour ≤ hour < closeHour`.
   - "Expect a call by the end of the next business day": urgent at any other time.
   - "Expect a call within 2 business days": not urgent.
   (FR-021, FR-025, R7)
-- [ ] T026 [P] [US1] Implement `newConfirmationNumber(date, existing)` in `frontend/src/rules/confirmationNumber.ts`. The format is `LA-YYMMDD-XXXX`, where `XXXX` is 4 random uppercase letters or digits, unique within `existing`. (FR-021)
-- [ ] T027 [US1] Build the Welcome page in `frontend/src/pages/Welcome.tsx`. It shows the free-service and who-sees-it text from copy.ts and a "Start" button that dispatches `start` and sets the hash to `#/form`, with no login step. (FR-001, FR-002, US1-AS1)
-- [ ] T028 [US1] Build `frontend/src/components/QuestionScreen.tsx`:
+- [X] T026 [P] [US1] Implement `newConfirmationNumber(date, existing)` in `frontend/src/rules/confirmationNumber.ts`. The format is `LA-YYMMDD-XXXX`, where `XXXX` is 4 random uppercase letters or digits, unique within `existing`. (FR-021)
+- [X] T027 [US1] Build the Welcome page in `frontend/src/pages/Welcome.tsx`. It shows the free-service and who-sees-it text from copy.ts and a "Start" button that dispatches `start` and sets the hash to `#/form`, with no login step. (FR-001, FR-002, US1-AS1)
+- [X] T028 [US1] Build `frontend/src/components/QuestionScreen.tsx`:
   - Render one question (`data-testid="question"`, `data-question-id`).
   - Show the `explanation` above the answer controls.
   - Provide answer controls for each `kind`, plus a button `data-testid="unsure"` labeled "I'm not sure".
   - Show a `next-step` line, plus Continue and Back buttons (in-app only, no history).
   (FR-006, FR-007, FR-009, US1-AS4–AS6)
-- [ ] T029 [US1] Build the IntakeForm page in `frontend/src/pages/IntakeForm.tsx`:
+- [X] T029 [US1] Build the IntakeForm page in `frontend/src/pages/IntakeForm.tsx`:
   - Step through `visibleQuestions`, recomputing them after each answer.
   - Then show the review step, then submit.
   - When the applicant leaves through in-app navigation with unsaved answers, show the leave warning from copy.ts.
   (FR-004, FR-005, FR-006, spec edge case "leaves without logging in")
-- [ ] T030 [US1] Build `frontend/src/components/ReviewStep.tsx`, listing the answers. Court and notice dates show "Reported by applicant, not verified", and unsure answers show "Not sure". (FR-013, US1-AS8)
-- [ ] T031 [US1] Implement `submit` in `frontend/src/state/intakeStore.ts`:
+- [X] T030 [US1] Build `frontend/src/components/ReviewStep.tsx`, listing the answers. Court and notice dates show "Reported by applicant, not verified", and unsure answers show "Not sure". (FR-013, US1-AS8)
+- [X] T031 [US1] Implement `submit` in `frontend/src/state/intakeStore.tsx`:
   - Set `submittedAt = now()`.
   - Compute `urgent`, `callbackMessage`, and `confirmationNumber`, and set `missingDocuments = []` until US3 wires it.
   - Set `status = "waitingForStaffReview"` (the only post-submit status) and call `saveRequest`.
   - Clear the draft and go to `#/confirmation`.
   (FR-014, FR-021, FR-022)
-- [ ] T032 [US1] Build the Confirmation page in `frontend/src/pages/Confirmation.tsx`, with these test IDs:
+- [X] T032 [US1] Build the Confirmation page in `frontend/src/pages/Confirmation.tsx`, with these test IDs:
   - `confirmation-number`, with a sentence explaining what it is for
   - `docs-received`, listing readable documents by type or showing "None"
   - `callback`
@@ -220,11 +220,11 @@ the Back button, and run the helper path (quickstart.md scenarios 2–3).
 
 ### Tests for User Story 2 (write first, confirm they fail) ⚠️
 
-- [ ] T033 [P] [US2] Write component tests in `frontend/tests/component/SafetyBar.test.tsx`:
+- [X] T033 [P] [US2] Write component tests in `frontend/tests/component/SafetyBar.test.tsx`:
   - `US2-AS1`: the `quick-exit` button renders, labeled "Quick exit".
   - `US2-AS3`: `help-contact` shows `OFFICE.helpContact`.
   - `FR-003`: clicking calls the reset action and then `location.replace(OFFICE.quickExitUrl)` (mock `location.replace`).
-- [ ] T034 [P] [US2] Write end-to-end tests in `frontend/tests/e2e/us2.spec.ts`:
+- [X] T034 [P] [US2] Write end-to-end tests in `frontend/tests/e2e/us2.spec.ts`:
   - `US2-AS1` and `SC-002`: on `#/`, every form step, the upload, review, and confirmation screens, and `#/account`, the `quick-exit` and `help-contact` elements are within the 360×640 viewport.
   - `US2-AS2` and `SC-003`: after quick exit from a question screen, the URL ends in `/neutral.html`. After `page.goBack()`, no answer text or `question` test ID is visible. Navigation completes in under 1 s.
   - `US2-AS4`, `US2-AS5`, and `US2-AS6`: with "Someone is helping me", `private-gate` appears before `Q-DANGER-AFRAID`. After answering, the review and confirmation pages contain no danger answer text.
@@ -232,16 +232,16 @@ the Back button, and run the helper path (quickstart.md scenarios 2–3).
 
 ### Implementation for User Story 2
 
-- [ ] T035 [US2] Build `frontend/src/components/SafetyBar.tsx`:
+- [X] T035 [US2] Build `frontend/src/components/SafetyBar.tsx`:
   - A fixed top bar with a `quick-exit` button and a `help-contact` element.
   - Quick exit dispatches `reset` (clearing all in-memory answers), blanks the page body, then calls `location.replace(OFFICE.quickExitUrl)`.
   - Pressing Escape three times within 2 s also triggers quick exit.
   (FR-003, FR-008, R3)
-- [ ] T036 [US2] Render SafetyBar in `frontend/src/components/Layout.tsx` on every applicant route (`#/`, `#/form`, `#/confirmation`, `#/account`). (FR-003, FR-008, US2-AS1, US2-AS3)
-- [ ] T037 [US2] Add a `pageshow` listener in `frontend/src/main.tsx`. When `event.persisted` is true (the page was restored from the back/forward cache), clear the body and call `location.reload()`, so restored pages never show answers. (FR-003, R3, US2-AS2)
-- [ ] T038 [US2] Build `frontend/src/components/PrivateGate.tsx` (`data-testid="private-gate"`). It says "The next questions are private. Please answer them on your own." and has a button "I'm alone now, continue". In `frontend/src/pages/IntakeForm.tsx`, insert it before the first `danger`-section question when `helperPresent` is `true` or `"unsure"`. (FR-010, FR-011, K5, US2-AS4, US2-AS5)
-- [ ] T039 [US2] Hide private answers:
-  - In `frontend/src/state/intakeStore.ts`, set `Answer.private = question.private && helperPresent !== false`.
+- [X] T036 [US2] Render SafetyBar in `frontend/src/components/Layout.tsx` on every applicant route (`#/`, `#/form`, `#/confirmation`, `#/account`). (FR-003, FR-008, US2-AS1, US2-AS3)
+- [X] T037 [US2] Add a `pageshow` listener in `frontend/src/main.tsx`. When `event.persisted` is true (the page was restored from the back/forward cache), clear the body and call `location.reload()`, so restored pages never show answers. (FR-003, R3, US2-AS2)
+- [X] T038 [US2] Build `frontend/src/components/PrivateGate.tsx` (`data-testid="private-gate"`). It says "The next questions are private. Please answer them on your own." and has a button "I'm alone now, continue". In `frontend/src/pages/IntakeForm.tsx`, insert it before the first `danger`-section question when `helperPresent` is `true` or `"unsure"`. (FR-010, FR-011, K5, US2-AS4, US2-AS5)
+- [X] T039 [US2] Hide private answers:
+  - In `frontend/src/state/intakeStore.tsx`, set `Answer.private = question.private && helperPresent !== false`.
   - In `frontend/src/components/ReviewStep.tsx` and `frontend/src/pages/Confirmation.tsx`, never render answers with `private: true`. Show no placeholder that reveals their content.
   (FR-011, US2-AS6, SC-007)
 
@@ -258,12 +258,12 @@ result, and missing-document messages. Submission is never blocked.
 
 ### Tests for User Story 3 (write first, confirm they fail) ⚠️
 
-- [ ] T040 [P] [US3] Write unit tests for `requiredDocuments` and `missingDocuments` in `frontend/tests/unit/documents.test.ts`, covering all 5 rows of the contracts/rules.md table. Also cover "only `readable` documents count" and "`never` rules are never missing". Name them `US3-AS5 …`, `US3-AS6 …`, `FR-017 …`, and `edge: subsidy unsure …`.
-- [ ] T041 [P] [US3] Write component tests in `frontend/tests/component/UploadStep.test.tsx`:
+- [X] T040 [P] [US3] Write unit tests for `requiredDocuments` and `missingDocuments` in `frontend/tests/unit/documents.test.ts`, covering all 5 rows of the contracts/rules.md table. Also cover "only `readable` documents count" and "`never` rules are never missing". Name them `US3-AS5 …`, `US3-AS6 …`, `FR-017 …`, and `edge: subsidy unsure …`.
+- [X] T041 [P] [US3] Write component tests in `frontend/tests/component/UploadStep.test.tsx`:
   - `US3-AS1`: `photo-instructions` comes before the first `doc-slot-*`, and `data-required` is correct.
   - `US3-AS2`: choosing `simulate-lease` = Unreadable shows `doc-problem-lease` immediately.
   - `edge: non-image file`: a `.txt` file is rejected with a message.
-- [ ] T042 [P] [US3] Write end-to-end tests in `frontend/tests/e2e/us3.spec.ts`:
+- [X] T042 [P] [US3] Write end-to-end tests in `frontend/tests/e2e/us3.spec.ts`:
   - `US3-AS3`: leaving the step with a missing required document shows `missing-docs` naming it, and Submit stays enabled.
   - `US3-AS4`: confirmation `docs-received` lists the uploaded types.
   - `US3-AS5` and `US3-AS6`: full-path variants.
@@ -271,7 +271,7 @@ result, and missing-document messages. Submission is never blocked.
 
 ### Implementation for User Story 3
 
-- [ ] T043 [P] [US3] Create `frontend/src/config/documents.ts` exporting `DOCUMENT_RULES: DocumentRule[]`, one entry per row of the spec's Document Requirements table:
+- [X] T043 [P] [US3] Create `frontend/src/config/documents.ts` exporting `DOCUMENT_RULES: DocumentRule[]`, one entry per row of the spec's Document Requirements table:
   - `problemNotice`: all, always, C14 C68
   - `incomeProof`: all, hasIncome, C45 C68
   - `deadlinePaperwork`: all, urgentByDate, C90
@@ -283,7 +283,7 @@ result, and missing-document messages. Submission is never blocked.
   - `recertPaperwork`: eviction, subsidyAndRecertIssues, D20
 
   Set `satisfiedBy` so that `problemNotice ← evictionNotice` and `deadlinePaperwork ← courtPapers`. Give each rule a plain-language `label` and `explanation` and traces FR-015 and FR-017, plus G-8 and G-95. (FR-015, FR-017)
-- [ ] T044 [P] [US3] Implement `requiredDocuments(problemType, answers, urgent)` and `missingDocuments(required, documents)` in `frontend/src/rules/documents.ts`:
+- [X] T044 [P] [US3] Implement `requiredDocuments(problemType, answers, urgent)` and `missingDocuments(required, documents)` in `frontend/src/rules/documents.ts`:
   - `hasVoucherOrPublicHousing` means `Q-SUBSIDY` is Section 8/voucher or Public housing.
   - `hasSubsidy` means any subsidy option except None.
   - `subsidyAndRecertIssues` means `hasSubsidy` and `Q-RECERT` = yes.
@@ -291,15 +291,15 @@ result, and missing-document messages. Submission is never blocked.
   - For eviction cases, `problemNotice` is satisfied by `evictionNotice`.
   - Only `readable` uploads count, and `never` rules are never returned as missing.
   (FR-017)
-- [ ] T045 [US3] Build `frontend/src/components/UploadStep.tsx`:
+- [X] T045 [US3] Build `frontend/src/components/UploadStep.tsx`:
   - `photo-instructions` first.
   - Then one `doc-slot-<type>` per applicable rule, with `data-required`, the explanation, a file input accepting `image/*,application/pdf`, and a `simulate-<type>` select (Readable, the default / Unreadable / Wrong page) labeled "Prototype: simulate result".
   - Show `doc-problem-<type>` immediately for an unreadable or wrong-page upload, with "Retake or replace".
   - Reject other file types with a message.
   - Store only `{type, fileName, mimeType, sizeBytes, readability}`.
   (FR-015, FR-016, R6, US3-AS1, US3-AS2)
-- [ ] T046 [US3] In `frontend/src/pages/IntakeForm.tsx`, insert UploadStep after the last question and before the review step. When the applicant leaves the step with missing required documents, show `missing-docs` naming each one, and keep Submit enabled. (FR-017, US3-AS3)
-- [ ] T047 [US3] Wire the documents into `submit` in `frontend/src/state/intakeStore.ts`, setting `missingDocuments = missingDocuments(requiredDocuments(…), documents)`. In `frontend/src/pages/Confirmation.tsx`, make `docs-received` list the readable documents by `label`. (FR-017, FR-021, US3-AS4)
+- [X] T046 [US3] In `frontend/src/pages/IntakeForm.tsx`, insert UploadStep after the last question and before the review step. When the applicant leaves the step with missing required documents, show `missing-docs` naming each one, and keep Submit enabled. (FR-017, US3-AS3)
+- [X] T047 [US3] Wire the documents into `submit` in `frontend/src/state/intakeStore.tsx`, setting `missingDocuments = missingDocuments(requiredDocuments(…), documents)`. In `frontend/src/pages/Confirmation.tsx`, make `docs-received` list the readable documents by `label`. (FR-017, FR-021, US3-AS4)
 
 **Checkpoint**: T040–T042 pass. US1 and US2 tests still pass.
 
@@ -314,11 +314,11 @@ unverified court dates.
 
 ### Tests for User Story 4 (write first, confirm they fail) ⚠️
 
-- [ ] T048 [P] [US4] Write component tests in `frontend/tests/component/StaffList.test.tsx`. Seed storage with fixture requests:
+- [X] T048 [P] [US4] Write component tests in `frontend/tests/component/StaffList.test.tsx`. Seed storage with fixture requests:
   - `US4-AS4`: each `staff-row` shows urgent with its reasons, the unsure count and prompts, missing-document labels, and a court date with "Reported by applicant, not verified".
   - `US4-AS5`: `mock-banner` is present and there is no eligibility column or words.
   - `storage: clear prototype data` empties the list.
-- [ ] T049 [P] [US4] Write end-to-end tests in `frontend/tests/e2e/us4.spec.ts`. Submit three requests through the UI with a fixed clock: court date +7, court date +8 with no danger, and +30 with danger unsure. Then assert:
+- [X] T049 [P] [US4] Write end-to-end tests in `frontend/tests/e2e/us4.spec.ts`. Submit three requests through the UI with a fixed clock: court date +7, court date +8 with no danger, and +30 with danger unsure. Then assert:
   - `US4-AS1`: the first row is urgent.
   - `US4-AS3`: the second row is not urgent.
   - `US4-AS2`: the third row is urgent with reason danger.
@@ -326,14 +326,14 @@ unverified court dates.
 
 ### Implementation for User Story 4
 
-- [ ] T050 [US4] Build `frontend/src/pages/StaffList.tsx` at `#/staff`:
+- [X] T050 [US4] Build `frontend/src/pages/StaffList.tsx` at `#/staff`:
   - Render `MockBanner`.
   - Show one `staff-row` per stored request (with `data-confirmation`), newest first.
   - Columns: confirmation number and submitted time; Urgent (Yes/No plus "court date" and/or "danger reported"); Not sure (count plus prompts); Missing documents (labels); Court date (value plus "Reported by applicant, not verified"); Status ("Waiting for staff review").
   - Add a "Clear prototype data" button calling `clearPrototypeData()`.
   - Do not render private danger answer values. The urgency reason is enough.
   (FR-023, FR-026, US4-AS1–AS5)
-- [ ] T051 [US4] Register the `#/staff` route in `frontend/src/App.tsx`, without SafetyBar, because it is a staff view. (FR-023)
+- [X] T051 [US4] Register the `#/staff` route in `frontend/src/App.tsx`, without SafetyBar, because it is a staff view. (FR-023)
 
 **Checkpoint**: T048–T049 pass. Earlier stories still pass.
 
@@ -348,11 +348,11 @@ always decline. K13 and K14 stay open.
 
 ### Tests for User Story 5 (write first, confirm they fail) ⚠️
 
-- [ ] T052 [P] [US5] Write unit tests in `frontend/tests/unit/accounts.test.ts`:
+- [X] T052 [P] [US5] Write unit tests in `frontend/tests/unit/accounts.test.ts`:
   - `FR-018`: create an account with nickname "string, 1–30 characters", rejecting empty, over-30, and duplicate nicknames.
   - `FR-018`: save the draft, then load the draft.
   - `FR-020`: adding a submitted confirmation number makes the status list return "Waiting for staff review".
-- [ ] T053 [P] [US5] Write end-to-end tests in `frontend/tests/e2e/us5.spec.ts`:
+- [X] T053 [P] [US5] Write end-to-end tests in `frontend/tests/e2e/us5.spec.ts`:
   - `US5-AS1`: `save-later` while logged out shows the account prompt, and `decline-account` returns to the same question with answers kept.
   - `US5-AS2`: create `tester1`, save, reload, log in, and the form resumes at the first unanswered question.
   - `US5-AS3`: after submitting, `account-status` reads "Waiting for staff review".
@@ -360,23 +360,23 @@ always decline. K13 and K14 stay open.
 
 ### Implementation for User Story 5
 
-- [ ] T054 [P] [US5] Implement the account functions in `frontend/src/state/accounts.ts` on top of `storage.ts`:
+- [X] T054 [P] [US5] Implement the account functions in `frontend/src/state/accounts.ts` on top of `storage.ts`:
   - `createAccount(nickname)` takes a nickname of "string, 1–30 characters", unique in this browser.
   - `logIn(nickname)` and `saveDraft(nickname, draft)` (at most one draft).
   - `loadDraft(nickname)`.
   - `addSubmitted(nickname, confirmationNumber)` and `statusesFor(nickname)`.
   (FR-018, FR-020, R5)
-- [ ] T055 [US5] Build `frontend/src/pages/Account.tsx` at `#/account`:
+- [X] T055 [US5] Build `frontend/src/pages/Account.tsx` at `#/account`:
   - `MockBanner`.
   - A form whose only input is `nickname`, with "Create account" and "Log in" buttons.
   - A `decline-account` button, "Continue without saving", which returns to `#/form` with the in-memory answers kept.
   - When logged in, an `account-status` list showing "Waiting for staff review" per submitted request.
   (FR-019, FR-020, FR-026, US5-AS1, US5-AS3, US5-AS4)
-- [ ] T056 [US5] Add a `save-later` button ("Save and finish later") to `frontend/src/components/QuestionScreen.tsx`, and a "Check my status" link to `frontend/src/pages/Welcome.tsx`:
+- [X] T056 [US5] Add a `save-later` button ("Save and finish later") to `frontend/src/components/QuestionScreen.tsx`, and a "Check my status" link to `frontend/src/pages/Welcome.tsx`:
   - If the applicant is not logged in, go to `#/account` (G-405 prompt).
   - If logged in, call `saveDraft` and confirm "Saved".
   (FR-018, FR-019, US5-AS1)
-- [ ] T057 [US5] In `frontend/src/state/intakeStore.ts`:
+- [X] T057 [US5] In `frontend/src/state/intakeStore.tsx`:
   - On log-in, if a saved draft exists, load it and set the step to the first visible question without an answer.
   - On submit while logged in, call `addSubmitted` and clear the saved draft.
   (FR-018, FR-020, US5-AS2, US5-AS3)
@@ -387,16 +387,16 @@ always decline. K13 and K14 stay open.
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T058 [P] Add `frontend/tests/e2e/a11y.spec.ts`, which runs an `@axe-core/playwright` scan on `#/`, a question screen, the upload step, review, `#/confirmation`, `#/account`, and `#/staff`, and asserts there are no serious or critical violations. (R10, G-155)
-- [ ] T059 [P] Add `frontend/scripts/check-traceability.mjs` and an npm script `trace`:
+- [X] T058 [P] Add `frontend/tests/e2e/a11y.spec.ts`, which runs an `@axe-core/playwright` scan on `#/`, a question screen, the upload step, review, `#/confirmation`, `#/account`, and `#/staff`, and asserts there are no serious or critical violations. (R10, G-155)
+- [X] T059 [P] Add `frontend/scripts/check-traceability.mjs` and an npm script `trace`:
   - Parse the US#-AS#, FR-###, and SC-### IDs from `specs/001-legal-aid-intake-form/spec.md`.
   - Collect test titles from `npx vitest list --json` and `npx playwright test --list --reporter=json`.
   - Print any scenario with no test, and exit non-zero if any exist.
   - Exempt SC-001 and SC-008, which are manual checks.
   (Principle I, Principle II)
-- [ ] T060 [P] Write `frontend/README.md` with setup, run, and test commands from quickstart.md, the configuration values in `src/config/office.ts`, and a note that all data is fictional and stored only in the browser. (Principles III and IV)
-- [ ] T061 Create `specs/001-legal-aid-intake-form/usability-results.md` as a results template for SC-001 and SC-008: one row per participant, with time to confirmation, whether the facilitator helped, and answers to "Does this cost money? Who will see your answers?". (SC-001, SC-008)
-- [ ] T062 Run the full quickstart.md validation: `npm test`, `npm run test:e2e`, `npm run trace`, and `npm run build`. Then run manual scenarios 1–6 and fix any failures. (All FRs)
+- [X] T060 [P] Write `frontend/README.md` with setup, run, and test commands from quickstart.md, the configuration values in `src/config/office.ts`, and a note that all data is fictional and stored only in the browser. (Principles III and IV)
+- [X] T061 Create `specs/001-legal-aid-intake-form/usability-results.md` as a results template for SC-001 and SC-008: one row per participant, with time to confirmation, whether the facilitator helped, and answers to "Does this cost money? Who will see your answers?". (SC-001, SC-008)
+- [X] T062 Run the full quickstart.md validation: `npm test`, `npm run test:e2e`, `npm run trace`, and `npm run build`. Then run manual scenarios 1–6 and fix any failures. (All FRs)
 
 ---
 
@@ -426,7 +426,7 @@ pages, then wiring into the store.
 - **Foundational**: T007, T008, T009, T010, T012, T014, and T015 in parallel after T006. T011 and T013 follow.
 - **US1**: tests T016–T021 in parallel. Then T022–T026 in parallel. Then T027–T032 in order.
 - **US3**: T040–T042 in parallel. Then T043 and T044 in parallel.
-- **Across stories**: once US1 is done, US2, US3, and US5 touch mostly separate files and can be split among teammates. Coordinate edits to `IntakeForm.tsx` and `intakeStore.ts`.
+- **Across stories**: once US1 is done, US2, US3, and US5 touch mostly separate files and can be split among teammates. Coordinate edits to `IntakeForm.tsx` and `intakeStore.tsx`.
 
 ### Parallel example: User Story 1
 

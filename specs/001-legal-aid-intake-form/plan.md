@@ -30,7 +30,7 @@ The technical approach is a static React and TypeScript single-page app in `fron
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x on Node.js 22 LTS or later (the local machine has Node 26)
+**Language/Version**: TypeScript (7.0 installed) on Node.js 22 LTS or later (the local machine has Node 26)
 
 **Primary Dependencies**:
 
@@ -123,7 +123,7 @@ frontend/
 │   │   ├── documents.ts
 │   │   └── traceability.ts
 │   ├── state/
-│   │   ├── intakeStore.ts      # in-memory draft and transitions
+│   │   ├── intakeStore.tsx      # in-memory draft and transitions
 │   │   ├── storage.ts          # localStorage adapter (contracts/storage.md)
 │   │   └── clock.ts            # injectable clock
 │   ├── components/
