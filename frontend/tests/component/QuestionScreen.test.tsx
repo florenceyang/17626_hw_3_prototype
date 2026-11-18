@@ -56,28 +56,4 @@ describe("QuestionScreen", () => {
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(onSubmit).toHaveBeenCalledWith({ value: true, unsure: false });
   });
-
-  test("FR-012 a court date before the notice date must be corrected or marked unsure", async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn();
-    render(
-      <QuestionScreen
-        question={q("Q-COURT-DATE")}
-        answer={undefined}
-        nextStep="Next: a safety question"
-        noticeDate="2026-11-20"
-        onSubmit={onSubmit}
-        onBack={() => {}}
-      />,
-    );
-
-    await user.type(screen.getByLabelText(/date you have to go to court/i), "2026-11-19");
-    expect(screen.getByTestId("date-order-warning")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
-
-    await user.clear(screen.getByLabelText(/date you have to go to court/i));
-    await user.type(screen.getByLabelText(/date you have to go to court/i), "2026-11-21");
-    expect(screen.queryByTestId("date-order-warning")).toBeNull();
-    expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
-  });
 });

@@ -19,9 +19,7 @@ export function Confirmation() {
     );
   }
 
-  const receivedTypes = [
-    ...new Set(request.documents.filter((d) => d.readability === "readable").map((d) => d.type)),
-  ];
+  const received = request.documents.filter((d) => d.readability === "readable");
 
   return (
     <section className="confirmation">
@@ -41,12 +39,12 @@ export function Confirmation() {
 
       <h2>{COPY.confirmation.docsTitle}</h2>
       <div data-testid="docs-received">
-        {receivedTypes.length === 0 ? (
+        {received.length === 0 ? (
           COPY.confirmation.none
         ) : (
           <ul>
-            {receivedTypes.map((type) => (
-              <li key={type}>{DOCUMENT_RULES_BY_TYPE[type].label}</li>
+            {received.map((d) => (
+              <li key={d.type}>{DOCUMENT_RULES_BY_TYPE[d.type].label}</li>
             ))}
           </ul>
         )}
@@ -61,16 +59,6 @@ export function Confirmation() {
       {loggedInNickname && (
         <button type="button" className="link" onClick={() => navigate("account")}>
           See my status
-        </button>
-      )}
-      {!loggedInNickname && (
-        <button
-          type="button"
-          className="link"
-          data-testid="confirmation-account"
-          onClick={() => navigate("account")}
-        >
-          Create an account or log in to check status
         </button>
       )}
     </section>

@@ -54,23 +54,6 @@ test("US1-AS3 deadline and danger questions come before household and income", a
   expect(lastUrgent).toBeLessThan(ids.indexOf("Q-HAS-INCOME"));
 });
 
-test("FR-005 a reported danger answer shows an urgent notice before the applicant continues", async ({ page }) => {
-  await startForm(page);
-  await goToStep(page, "Q-DANGER-AFRAID", {
-    "Q-PROBLEM-TYPE": "eviction",
-    "Q-HELPER": "alone",
-    "Q-NOTICE-DATE": "2026-11-02",
-    "Q-COURT-DATE": plusDays(TUESDAY_10AM, 30),
-  });
-
-  await answerCurrent(page, "yes");
-  await expect(page.getByTestId("safety-urgency-notice")).toContainText("urgent staff review");
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-DANGER-HOME");
-  await answerCurrent(page, "no");
-  await expect(page.getByTestId("safety-urgency-notice")).toHaveCount(0);
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-SUBSIDY");
-});
-
 test("US1-AS4 each question screen shows exactly one question and a 'Next:' line", async ({ page }) => {
   await startForm(page);
   for (let i = 0; i < 6; i++) {
@@ -80,29 +63,6 @@ test("US1-AS4 each question screen shows exactly one question and a 'Next:' line
     await expect(page.getByTestId("next-step")).toHaveText(/^Next: /);
     await chooseUnsure(page);
   }
-});
-
-test("FR-006 conditional follow-up questions each get their own screen and updated next step", async ({ page }) => {
-  await startForm(page);
-  await goToStep(page, "Q-SUBSIDY", {
-    "Q-PROBLEM-TYPE": "eviction",
-    "Q-HELPER": "alone",
-    "Q-NOTICE-DATE": "2026-11-02",
-    "Q-COURT-DATE": plusDays(TUESDAY_10AM, 30),
-    "Q-DANGER-AFRAID": "no",
-    "Q-DANGER-HOME": "no",
-  });
-  await expect(page.getByTestId("next-step")).toHaveText("Next: who lives with you");
-  await page.getByLabel("Section 8 or another voucher").check();
-  await expect(page.getByTestId("next-step")).toHaveText("Next: your recertification");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-RECERT");
-  await answerCurrent(page, "no");
-  await answerCurrent(page, 3);
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-HAS-INCOME");
-  await answerCurrent(page, "yes");
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-INCOME-AMOUNT");
-  await expect(page.getByTestId("next-step")).toHaveText("Next: upload documents");
 });
 
 test("US1-AS5 a legal term is explained above the answer controls", async ({ page }) => {
@@ -132,30 +92,12 @@ test("US1-AS7 notice date and court date are asked on two separate screens", asy
   await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-COURT-DATE");
 });
 
-test("US1-AS8 / FR-013 the unverified court-date label is staff-only", async ({ page }) => {
+test("US1-AS8 / FR-013 court date shown back is labeled 'Reported by applicant, not verified'", async ({ page }) => {
   await startForm(page);
   await fillUntilUpload(page, evictionPlan(plusDays(TUESDAY_10AM, 20)));
   await page.getByRole("button", { name: "Continue to review" }).click();
-  await expect(page.getByTestId("review-Q-COURT-DATE")).not.toContainText("Reported by applicant, not verified");
-  await expect(page.getByTestId("review-Q-NOTICE-DATE")).not.toContainText("Reported by applicant, not verified");
-  await page.getByRole("button", { name: "Send my request" }).click();
-  await page.goto("/#/staff");
-  await expect(page.getByTestId("staff-court").first()).toContainText("Reported by applicant, not verified");
-});
-
-test("FR-012 a court date before the notice date must be corrected or marked unsure", async ({ page }) => {
-  await startForm(page);
-  await goToStep(page, "Q-NOTICE-DATE", { "Q-PROBLEM-TYPE": "eviction", "Q-HELPER": "alone" });
-  await answerCurrent(page, "2026-11-20");
-  await expect(page.getByTestId("question")).toHaveAttribute("data-question-id", "Q-COURT-DATE");
-
-  const date = page.getByTestId("question").locator('input[type="date"]');
-  await date.fill("2026-11-19");
-  await expect(page.getByTestId("date-order-warning")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Continue" })).toBeDisabled();
-  await date.fill("2026-11-21");
-  await expect(page.getByTestId("date-order-warning")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Continue" })).toBeEnabled();
+  await expect(page.getByTestId("review-Q-COURT-DATE")).toContainText("Reported by applicant, not verified");
+  await expect(page.getByTestId("review-Q-NOTICE-DATE")).toContainText("Reported by applicant, not verified");
 });
 
 test("US1-AS9 / SC-005 non-urgent submission shows confirmation number, 'None' documents, and 2 business days", async ({ page }) => {

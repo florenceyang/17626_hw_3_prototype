@@ -1,7 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { UploadStep } from "../../src/components/UploadStep";
 import { applicableDocuments } from "../../src/rules/documents";
 import type { UploadedDocument } from "../../src/types";
@@ -17,17 +17,7 @@ let latest: UploadedDocument[] = [];
 function Harness() {
   const [docs, setDocs] = useState<UploadedDocument[]>([]);
   latest = docs;
-  return (
-    <UploadStep
-      items={ITEMS}
-      documents={docs}
-      onChange={setDocs}
-      onBack={() => {}}
-      onContinue={() => {}}
-      onSaveLater={() => {}}
-      savedMessage={null}
-    />
-  );
+  return <UploadStep items={ITEMS} documents={docs} onChange={setDocs} onBack={() => {}} onContinue={() => {}} />;
 }
 
 const file = (name: string, type: string) => new File(["fictional"], name, { type });
@@ -76,36 +66,5 @@ describe("UploadStep", () => {
     expect(latest).toEqual([
       { type: "lease", fileName: "lease.pdf", mimeType: "application/pdf", sizeBytes: 9, readability: "readable" },
     ]);
-  });
-
-  test("FR-015 a document slot accepts multiple photos and keeps each file's metadata", async () => {
-    const user = userEvent.setup();
-    render(<Harness />);
-    await user.upload(screen.getByTestId("file-lease"), [
-      file("lease-page-1.jpg", "image/jpeg"),
-      file("lease-page-2.jpg", "image/jpeg"),
-    ]);
-
-    expect(latest.map((doc) => doc.fileName)).toEqual(["lease-page-1.jpg", "lease-page-2.jpg"]);
-    expect(screen.getByLabelText("Received files for Lease")).toHaveTextContent("lease-page-1.jpg");
-    expect(screen.getByLabelText("Received files for Lease")).toHaveTextContent("lease-page-2.jpg");
-  });
-
-  test("FR-016 Retake or replace opens the file picker and preserves the current file until replacement", async () => {
-    const user = userEvent.setup();
-    render(<Harness />);
-    await user.selectOptions(screen.getByTestId("simulate-lease"), "unreadable");
-    await user.upload(screen.getByTestId("file-lease"), file("lease-blurry.jpg", "image/jpeg"));
-
-    const click = vi.spyOn(HTMLInputElement.prototype, "click");
-    await user.click(screen.getByRole("button", { name: "Retake or replace" }));
-    expect(click).toHaveBeenCalled();
-    expect(latest.map((doc) => doc.fileName)).toEqual(["lease-blurry.jpg"]);
-
-    fireEvent.change(screen.getByTestId("file-lease"), {
-      target: { files: [file("lease-replacement.jpg", "image/jpeg")] },
-    });
-    expect(latest.map((doc) => doc.fileName)).toEqual(["lease-replacement.jpg"]);
-    click.mockRestore();
   });
 });

@@ -56,9 +56,7 @@ decisions are bounded by the constitution:
 
 - **Decision**:
   1. Form steps never add browser history entries. Step changes are app state, not new URLs.
-  2. On quick exit, the app clears all in-memory answers and logs out. An account draft that the
-     applicant previously chose to save remains in browser storage and can be resumed after
-     logging in again; unsaved form changes are discarded.
+  2. On quick exit, the app first clears all in-memory answers and any session draft.
   3. Then it calls `location.replace()` to load a neutral page. `replace` swaps out the
      current history entry, so Back skips the form.
   4. A `pageshow` listener blanks and reloads the app if the browser restores it from its

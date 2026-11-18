@@ -7,7 +7,7 @@ A phone-first prototype of an online intake form for a legal aid office. It cove
 **Everything is fictional and stays in your browser.**
 - There is no server, no real login, and no network calls (Constitution Principle IV).
 - Submitted requests and mock accounts are kept in `localStorage`.
-- Uploaded files are never stored; only metadata (type, name, size, and simulated readability) is kept.
+- Uploaded files are never stored; only their names and sizes are kept.
 - Use made-up information only.
 
 ## Run it
@@ -28,10 +28,6 @@ npm run dev                       # http://localhost:5173
 | Mock staff list | http://localhost:5173/#/staff |
 
 The staff list has a **Clear prototype data** button that resets the stored requests and accounts.
-Applicants can select multiple photos for a document type and save progress from the upload and
-review screens. After submitting anonymously, they can create or log in to a mock account to check
-the request's status. Quick exit clears the current session; a draft previously saved to an account
-remains in this browser and can be resumed after logging in again.
 
 ## Test it
 
