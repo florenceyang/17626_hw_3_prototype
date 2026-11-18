@@ -17,11 +17,9 @@ What the v1 branch contains:
 
 ### 2. GitHub Version 2
 
-TODO: Malak to fill in
-
-- **v2 branch:** TODO: Malak to fill in
-- **v2 commit:** TODO: Malak to fill in
-- Revised goal model, specification, Spec Kit artifacts and prototype source code: TODO: Malak to fill in
+- **v2 directory:** [`v2/`](v2/)
+- **v2 commit:** [`5294eed`](https://github.com/florenceyang/17626_hw_3_prototype/commit/5294eedac55087c0e4617cd0e02f42cc4d29600d)
+- Revised goal model, specification, Spec Kit artifacts and prototype source code: [`v2/`](v2/)
 
 ### 3. Prototype V1 URL
 
@@ -42,7 +40,15 @@ npm run dev
 
 ### 4. Prototype V2 URL
 
-TODO: Malak to fill in
+To run v2 locally from the repository root, install [Node.js](https://nodejs.org/) 22 or later, then:
+
+```bash
+cd v2/frontend
+npm install
+npm run dev
+```
+
+The applicant form will be available at http://localhost:5173/#/.
 
 ### 5. Requirements Analysis and Learning Log
 
@@ -58,6 +64,7 @@ reflection. Supporting documents:
 | Path                               | Contents                                                                      |
 | ---------------------------------- | ----------------------------------------------------------------------------- |
 | `frontend/`                        | The app and its tests ([frontend/README.md](frontend/README.md))              |
+| `v2/`                              | Version 2 project snapshot                                                    |
 | `specs/001-legal-aid-intake-form/` | Spec, plan, research, data model, contracts, tasks                            |
 | `goal-models/`                     | Goal models                                                                   |
 | `docs/`                            | Initial requirements, goal model decisions, traceability matrix, learning log |
