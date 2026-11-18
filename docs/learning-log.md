@@ -81,8 +81,17 @@ for the client.
 
 # 3 - Revisions and Learning
 
-Malak - to fill in
+After evaluating v1, I revised the requirements and prototype together rather than treating each gap as a visual fix:
+
+- I made the question flow respond to answers. Deadline and danger questions come first, conditional follow-ups affect the actual next step, and a “Yes” or “I’m not sure” danger answer triggers an urgent-review notice. When someone is helping the applicant, danger answers are handled in a private step and are not shown on later screens.
+- I clarified how to handle dates and documents. The form explains when the court date is before the notice date, supports multiple photos for one document type, and keeps the existing file until a replacement is selected.
+- I kept starting and submitting a request account-free, while adding account prompts for saving progress and checking status. Applicants can also create or log in to a simulated account from the confirmation screen.
+- I added and updated tests around these flows, with scenario and requirement IDs in test names so the traceability check can connect requirements to tests.
+
+I learned that many v1 gaps came from distinctions the requirements had left implicit: routine versus urgent requests, an applicant versus a helper, reported information versus verified information, and anonymous use versus account-based saving. Writing those distinctions as explicit rules made the intended screen behavior and the cases to test much clearer.
 
 # 4 - Reflection
 
-Malak - to fill in
+Building v2 helped me see how competing goals shape even small interaction choices. Asking safety questions early can help staff identify urgent cases, but those answers also need extra privacy protections, especially when another person is helping. Similarly, accounts can support saving and status checks, but requiring one would add effort and could discourage someone from submitting a request. Keeping submission anonymous and making account use optional was a deliberate balance, not just a simplification.
+
+I also learned that a prototype can make assumptions visible, but it cannot establish that the experience is safe or usable in practice. The account and storage behavior is simulated in the browser, and the usability-results sheet does not yet contain participant results. I therefore cannot claim that the revised flow has been validated with users or is ready for real legal-aid information. The next step is to run the planned fictional-scenario usability checks and review the safety, privacy, and document language with legal-aid staff before treating these decisions as settled.
