@@ -2,7 +2,7 @@
 
 | Requirement | Interview Evidence | Goal Model Reference | Code / Implementation | Status |
 | :---- | :---- | :---- | :---- | :---- |
-| FR-001 (REQ 01): Start and submit the form without an account | TBD \- Malak to add reference from her transcripts | G-313 | `pages/Welcome.tsx` Welcome (Start needs no login); `state/intakeStore.tsx` submit() saves with no account. Tests: e2e/us1 | Fully satisfied |
+| FR-001 (REQ 01): Start and submit the form without an account | See supplemental Malak interview evidence below; the interviews do not directly establish account-free submission | G-313 | `pages/Welcome.tsx` Welcome (Start needs no login); `state/intakeStore.tsx` submit() saves with no account. Tests: e2e/us1 | Fully satisfied |
 | FR-002 (REQ 02): Say up front that the service is free and who will see the applicant's information | Gl:37 "I worry about anything that might cost money"; C:92 "without exposing anyone's situation"; C:73 access "limited by role". Goal model source for "who sees it": teammate's Gl\[68\]\[74\]\[77\] | G-157, G-323 | `pages/Welcome.tsx` Welcome, text in `config/copy.ts` COPY.welcome.free / whoSees. Tests: e2e/us1 | Fully satisfied |
 | FR-003 (REQ 03): Quick-exit button on every screen | C:90 domestic violence callers "need to be able to hang up quickly"; C:92 "without exposing anyone's situation"; C:96 "keep those urgent and confidential situations protected" | G-71 (under G-68) | `components/SafetyBar.tsx` quickExit() (button, or Esc 3 times) → `state/navigation.ts` leaveTo() → `public/neutral.html`; on every applicant route via `components/Layout.tsx`. Tests: component/SafetyBar | Partially satisfied Need to figure out logged in case in more detail |
 | FR-004 (REQ 04): Ask the problem type and show only the questions that apply | C:68 "ask only the questions that apply to the person's problem"; C:9 "find out whether it's housing, family, or benefits" | G-6 | `config/questions.ts` Q-PROBLEM-TYPE; `rules/visibleQuestions.ts` visibleQuestions(). Tests: unit/visibleQuestions | Fully satisfied |
@@ -28,4 +28,39 @@
 | FR-024: An "I'm not sure" answer to a danger question counts as danger reported | C:90 "sometimes they emphasize danger because they're scared and don't know what counts as an emergency … we don't make someone prove immediate danger before getting it reviewed". Added during Spec Kit clarification | G-406, G-318 | `rules/urgency.ts` computeUrgency() treats an unsure danger answer as danger. Tests: unit/urgency | Fully satisfied |
 | FR-025: Business days exclude weekends; office hours are 9am to 5pm Monday to Friday | D:80 "needs to reach me the same day" (needs a definition of "day"). Hours not stated by stakeholders; added during Spec Kit clarification | G-138 | `rules/callback.ts` callbackMessage(); `config/office.ts` OFFICE (9 to 17, Mon to Fri, America/New\_York). Tests: unit/callback | Fully satisfied |
 | FR-026: Account, document-storage and staff-list features are visibly labeled as simulated | No stakeholder evidence: comes from the project constitution (Principle IV) | Out-of-scope dependencies of G-8, G-142, G-406 | `components/MockBanner.tsx`, used in `pages/Account.tsx` and `pages/StaffList.tsx`; "Prototype: simulate result" label in `components/UploadStep.tsx`. Tests: component/StaffList, e2e/us5 | Fully satisfied |
+
+## Supplemental Malak interview evidence
+
+These references are from the attached interview transcripts. Turn numbers refer to the numbered
+transcript turns. `M-Gl` is Gloria Hughes, `M-D` is Daniel Okonkwo, and `M-C` is Carmen Vasquez.
+“Related” evidence supports the underlying need but does not establish the exact interface rule.
+
+| Requirement | Malak interview evidence |
+| :---- | :---- |
+| FR-001: Start and submit without an account | Related: M-Gl:64 says logging in is uncomfortable; M-Gl:66 wants to stop and resume an online form. Neither directly addresses submitting anonymously. |
+| FR-002: Explain cost and information access | Privacy/access: M-Gl:68, 74, 77; M-C:30 requests role-based access. No direct evidence that the service is free. |
+| FR-003: Quick exit | Related: M-C:46, 50 says callers in domestic-violence situations need to hang up quickly and must not receive revealing voicemail or texts; M-Gl:77 fears her landlord learning she sought help. |
+| FR-004: Ask problem type and show applicable questions | M-C:4 describes screening housing, family, and benefits issues; M-C:8 wants plain-language, problem-appropriate questions and a way to jump to emergencies; M-Gl:26 recalls being asked what kind of problem she had. |
+| FR-005: Ask deadlines and danger early | M-D:10, 13, 28, 61 describes late discovery of deadlines and prioritizing court dates; M-C:8 wants staff to jump to emergency issues. |
+| FR-006: One question per screen and explain what comes next | M-Gl:26 describes difficulty with long forms; M-Gl:31 and 66 prefers being guided one question at a time and seeing what happens next. |
+| FR-007: Explain terms and documents in plain language | M-Gl:26, 28, 33 describes confusion about household income, court dates, and form wording; M-Gl:58, 61 wants clear upload instructions; M-C:8 asks for plain-language questions. |
+| FR-008: Provide a way to reach a person | Related: M-Gl:31, 33, 66 wants a person to explain the process. The interviews do not specify contact information on every screen. |
+| FR-009: Allow “I’m not sure” answers | Related: M-Gl:18, 28 is unsure about her paperwork and what “court date” means; M-C:56 says many callers do not know their household income. |
+| FR-010: Allow use alone or with a helper | M-Gl:31, 33, 56, 61, 80 describes her granddaughter helping with phone forms and documents. |
+| FR-011: Keep danger answers private when a helper is present | Related safety/privacy evidence: M-C:46, 50 discusses callers who need to hang up without revealing contact; M-Gl:77 fears disclosure to her landlord. Neither directly specifies the helper/private-answer flow. |
+| FR-012: Ask notice and court dates separately | M-Gl:28 distinguishes the date on a notice from the date to appear before a judge; M-D:19, 28 identifies the operative return date as an essential fact. |
+| FR-013: Mark court dates as reported, not verified | M-D:22, 32, 36, 38 describes docket cross-checking and not relying on unclear or unverified notice information; M-C:46 says transcripts can contain errors and facts must be verified. |
+| FR-014: Flag near-term court dates or reported danger as urgent | M-D:13, 61 says dates within seven days or this week need priority; M-C:46, 50 raises urgent safety situations; M-Gl:20, 37 worries her court date is coming soon. |
+| FR-015: Upload relevant documents with instructions | M-Gl:53, 56, 58, 61 discusses rent receipts, notice photos, and needing upload instructions; M-D:41, 50 needs a readable notice and lease; M-C:56, 65 describes time spent chasing missing documents. |
+| FR-016: Identify unreadable or wrong uploads promptly | M-D:22, 34, 36, 38 describes blurry or incomplete notices and the need for a legible original and verification. |
+| FR-017: Identify missing documents but allow submission | Related: M-Gl:53 lacks a lease; M-D:32, 61, 64 says missing documents affect actionability but should not lower urgency; M-C:56, 65 describes chasing missing documents. The interviews do not directly specify whether submission must remain enabled. |
+| FR-018: Save progress and resume later | M-Gl:64, 66 wants to avoid login friction and resume an online form; M-C:38 says a partially completed intake should be saved if a caller drops. |
+| FR-019: Prompt for an account to save or check status | Related, not an endorsement of requiring an account: M-Gl:64 is uncomfortable logging in and M-Gl:66 wants to stop and resume; see also M-Gl:71 on wanting to check whether information was received. |
+| FR-020: Show request status | M-Gl:71, 74 wants to know whether information was received and when she may hear from a lawyer. |
+| FR-021: Confirm receipt and expected follow-up | Related: M-Gl:71, 74 wants confirmation that information was received and an expected response time. No direct mention of a confirmation number or document list. |
+| FR-022: Leave eligibility decisions to staff | M-Gl:68 does not want AI deciding whether she qualifies without a lawyer; M-C:10, 16, 18, 21, 24, 27 calls for staff review and human approval of eligibility or emergency decisions. |
+| FR-023: Give staff a concise view of urgency and missing information | M-D:13, 22, 28, 61, 64 emphasizes court dates, operative facts, and missing documents; M-C:56, 65 wants missing documents tracked. |
+| FR-024: Treat an unsure danger answer as danger reported | No direct Malak interview evidence for this exact rule. Related safety evidence: M-C:46, 50 stresses human judgment and safe handling of danger situations. |
+| FR-025: Define business days and office hours | Related: M-D:13 asks for same-day action on near-term cases; M-C:27 discusses review during business hours. Neither establishes the prototype’s exact hours or weekday calculation. |
+| FR-026: Label prototype features as simulated | No direct Malak interview evidence; this requirement comes from the project constitution. |
 
