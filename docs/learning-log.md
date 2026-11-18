@@ -1,6 +1,6 @@
 # 1 - Sprint Planning and Requirements Selection
 
-##### Goal selection
+| Goal selection
 
 We chose to focus on the subset of goals that would encapsulate the intake form
 experience.
@@ -35,7 +35,7 @@ needed to consider between the different stakeholders' goals already. This also
 allowed us to test more edge cases and flows within the tight scope without
 getting distracted from other functionality.
 
-##### Requirements resolutions
+| Requirements resolutions
 
 Detailed in docs/goal-model-decisions.md
 
@@ -81,4 +81,8 @@ for the client.
 
 # 3 - Revisions and Learning
 
+Malak - to fill in
+
 # 4 - Reflection
+
+Malak - to fill in
